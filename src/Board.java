@@ -253,6 +253,18 @@ public class Board extends Observable {
 		else
 			return (int) Math.round(70 + 30 * (score - 32000.0) / score);
 	}
+	
+	public void reset() {
+		for (int r = 0; r < state.length; r++) {
+			for (int c = 0; c < state[0].length; c++) {
+				state[r][c] = 0;
+			}
+		}
+		score = 0;
+		for (int i = 0; i < startTiles; i++) {
+			placeTile();
+		}
+	}
 
 	@Override
 	public String toString() {
