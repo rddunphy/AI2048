@@ -14,7 +14,6 @@ import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -26,6 +25,7 @@ public class GUI implements Observer {
 	private JPanel scorePanel;
 	private JLabel scoreLabel;
 	private JPanel board;
+	private JPanel gameOverPanel;
 	private Colours colours;
 	private Set<BoardPanel> boardPanels;
 	
@@ -71,6 +71,17 @@ public class GUI implements Observer {
 		board = new JPanel();
 		populateBoard();
 		content.add(board, BorderLayout.CENTER);
+		gameOverPanel = new JPanel();
+		gameOverPanel.setBackground(new Color(255,255,255,100));
+		GridBagLayout gbl = new GridBagLayout();
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.CENTER;
+		gbl.setConstraints(gameOverPanel, gbc);
+		gameOverPanel.setLayout(gbl);
+		JLabel gameOverLabel = new JLabel("Game over!");
+		gameOverLabel.setFont(new Font(gameOverLabel.getFont().getName(), Font.PLAIN, gameOverLabel.getFont().getSize() * 4));
+		gameOverPanel.add(gameOverLabel);
+		frame.setGlassPane(gameOverPanel);
 		frame.pack();
 		frame.setVisible(true);
 		update(null, null);
@@ -145,7 +156,7 @@ public class GUI implements Observer {
 		}
 		scoreLabel.setText(Integer.toString(model.getScore()) + " - " + Integer.toString(model.getGrade()));
 		if (arg1 != null && arg1.equals("end"))
-			JOptionPane.showMessageDialog(frame, "Game over!");
+			gameOverPanel.setVisible(true);
 	}
 
 }
