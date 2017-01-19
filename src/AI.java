@@ -8,13 +8,9 @@ public abstract class AI implements ActionListener {
 	protected Board board;
 	private Timer timer;
 	
-	public AI (Board b) {
-		board = b;
-	}
-	
-	public void start() {
+	public void run(int delay) {
 		if (!board.checkGameOver()) {
-			timer = new Timer(10, this);
+			timer = new Timer(delay, this);
 			timer.start();
 		}
 	}
@@ -23,6 +19,10 @@ public abstract class AI implements ActionListener {
 		move();
 		if (board.checkGameOver())
 			timer.stop();
+	}
+	
+	public void setBoard(Board board) {
+		this.board = board;
 	}
 
 	protected abstract void move();
