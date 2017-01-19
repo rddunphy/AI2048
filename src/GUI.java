@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class GUI implements Observer {
 
@@ -72,6 +73,9 @@ public class GUI implements Observer {
 		content.add(board, BorderLayout.CENTER);
 		frame.pack();
 		frame.setVisible(true);
+		update(null, null);
+		AI ai = new RubbishAI(model);
+		ai.start();
 	}
 
 	private void populateBoard() {
@@ -127,7 +131,11 @@ public class GUI implements Observer {
 	}
 
 	public static void main(String[] args) {
-		new GUI();
+		SwingUtilities.invokeLater(new Runnable() {
+		    public void run() {
+				new GUI();
+		    }
+		});
 	}
 
 	@Override

@@ -17,6 +17,15 @@ public class Board extends Observable {
 		}
 	}
 
+	public Board(Board b) {
+		score = b.getScore();
+		for (int r = 0; r < state.length; r++) {
+			for (int c = 0; c < state[0].length; c++) {
+				state[r][c] = b.get(r, c);
+			}
+		}
+	}
+
 	private void placeTile() {
 		Random r = new Random();
 		int val = 2;
@@ -28,19 +37,42 @@ public class Board extends Observable {
 		checkGameOver();
 	}
 
-	private void checkGameOver() {
+	public boolean checkGameOver() {
 		if (getFreeSquares().isEmpty()) {
 			for (int r = 0; r < state.length; r++) {
 				for (int c = 0; c < state[0].length; c++) {
 					if (c < state[0].length - 1 && state[r][c] == state[r][c + 1])
-						return;
+						return false;
 					if (r < state.length - 1 && state[r][c] == state[r + 1][c])
-						return;
+						return false;
 				}
 			}
 			this.setChanged();
 			notifyObservers("end");
+			return true;
 		}
+		return false;
+	}
+
+	public List<Direction> availableMoves() {
+		List<Direction> moves = new ArrayList<>();
+		Board b = new Board(this);
+		b.move(Direction.UP);
+		if (!this.equals(b))
+			moves.add(Direction.UP);
+		b = new Board(this);
+		b.move(Direction.DOWN);
+		if (!this.equals(b))
+			moves.add(Direction.DOWN);
+		b = new Board(this);
+		b.move(Direction.RIGHT);
+		if (!this.equals(b))
+			moves.add(Direction.RIGHT);
+		b = new Board(this);
+		b.move(Direction.LEFT);
+		if (!this.equals(b))
+			moves.add(Direction.LEFT);
+		return moves;
 	}
 
 	private List<Square> getFreeSquares() {
@@ -73,11 +105,12 @@ public class Board extends Observable {
 				}
 			}
 		}
-		//throw new IllegalMoveException("Illegal move: Can't move " + dir);
+		// throw new IllegalMoveException("Illegal move: Can't move " + dir);
 	}
 
 	private void shift(Direction dir) {
-		boolean[][] collapsed = {{false, false, false, false},{false, false, false, false},{false, false, false, false},{false, false, false, false}};
+		boolean[][] collapsed = { { false, false, false, false }, { false, false, false, false },
+				{ false, false, false, false }, { false, false, false, false } };
 		switch (dir) {
 		case UP:
 			for (int r = 1; r < state.length; r++) {
@@ -203,11 +236,11 @@ public class Board extends Observable {
 			System.out.println("dkfjke");
 		}
 	}
-	
+
 	public int get(int row, int col) {
 		return state[row][col];
 	}
-	
+
 	public int getScore() {
 		return score;
 	}
@@ -220,7 +253,8 @@ public class Board extends Observable {
 		else
 			return (int) Math.round(70 + 30 * (score - 32000.0) / score);
 	}
-	
+
+	@Override
 	public String toString() {
 		String out = "";
 		for (int r = 0; r < state.length; r++) {
@@ -230,5 +264,19 @@ public class Board extends Observable {
 			out += "\n";
 		}
 		return out;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o.getClass() != Board.class)
+			return false;
+		Board b = (Board) o;
+		for (int r = 0; r < state.length; r++) {
+			for (int c = 0; c < state[0].length; c++) {
+				if (state[r][c] != b.state[r][c])
+					return false;
+			}
+		}
+		return true;
 	}
 }
