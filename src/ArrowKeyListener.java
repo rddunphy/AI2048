@@ -3,10 +3,12 @@ import java.awt.event.KeyListener;
 
 public class ArrowKeyListener implements KeyListener {
 
+	private GUI gui;
 	private Board model;
 	private boolean enabled;
 
-	public ArrowKeyListener(Board model) {
+	public ArrowKeyListener(GUI gui, Board model) {
+		this.gui = gui;
 		this.model = model;
 		this.enabled = true;
 	}
@@ -30,6 +32,9 @@ public class ArrowKeyListener implements KeyListener {
 				break;
 			case 40: // down;
 				model.move(Direction.DOWN);
+				break;
+			case 77: // m:
+				gui.moveAI();
 				break;
 			default:
 				break;

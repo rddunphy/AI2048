@@ -47,7 +47,7 @@ public class GUI implements Observer {
 		this.colours = new Colours();
 		frame = new JFrame("2048");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		keyListener = new ArrowKeyListener(model);
+		keyListener = new ArrowKeyListener(this, model);
 		frame.addKeyListener(keyListener);
 		content = new JPanel();
 		content.setLayout(new BorderLayout());
@@ -85,7 +85,7 @@ public class GUI implements Observer {
 		update(null, null);
 	}
 	
-	private void moveAI() {
+	public void moveAI() {
 		keyListener.setEnabled(false);
 		ai.setBoard(model);
 		ai.move();
@@ -159,11 +159,22 @@ public class GUI implements Observer {
 			}
 		});
 		submenu.add(cautiousAiButton);
+		JRadioButtonMenuItem probAiButton = new JRadioButtonMenuItem("Probabalistic AI");
+		probAiButton.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				AbstractButton button = (AbstractButton) e.getItem();
+				if (button.isSelected())
+					ai = new ProbabalisticAI();
+			}
+		});
+		submenu.add(probAiButton);
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rubbishAiButton);
 		bg.add(greedyAiButton);
 		bg.add(cautiousAiButton);
-		rubbishAiButton.setSelected(true);
+		bg.add(probAiButton);
+		probAiButton.setSelected(true);
 		menu.add(submenu);
 		menubar.add(menu);
 		frame.setJMenuBar(menubar);

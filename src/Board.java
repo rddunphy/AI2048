@@ -86,6 +86,18 @@ public class Board extends Observable {
 		}
 		return squares;
 	}
+	
+	public List<Square> getTileSquares() {
+		List<Square> squares = new ArrayList<>();
+		for (int r = 0; r < state.length; r++) {
+			for (int c = 0; c < state[0].length; c++) {
+				if (state[r][c] != 0) {
+					squares.add(new Square(r, c));
+				}
+			}
+		}
+		return squares;
+	}
 
 	public void move(Direction dir) {
 		move(dir, true);
@@ -245,6 +257,10 @@ public class Board extends Observable {
 
 	public int get(int row, int col) {
 		return state[row][col];
+	}
+	
+	public void put(int row, int col, int value) {
+		state[row][col] = value;
 	}
 
 	public int getScore() {
