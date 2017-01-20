@@ -16,7 +16,6 @@ import java.util.Set;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -39,7 +38,7 @@ public class GUI implements Observer {
 	private Colours colours;
 	private Set<BoardPanel> boardPanels;
 	private AI ai;
-	private static final int aiDelay = 50;
+	private static final int aiDelay = 20;
 
 	public GUI() {
 		model = new Board();
@@ -145,7 +144,7 @@ public class GUI implements Observer {
 			public void itemStateChanged(ItemEvent e) {
 				AbstractButton button = (AbstractButton) e.getItem();
 				if (button.isSelected()) {
-					ai = new GreedyAI();
+					ai = new GreedyAI(2);
 				}
 			}
 		});
@@ -156,7 +155,7 @@ public class GUI implements Observer {
 			public void itemStateChanged(ItemEvent e) {
 				AbstractButton button = (AbstractButton) e.getItem();
 				if (button.isSelected())
-					ai = new CautiousAI();
+					ai = new CautiousAI(1);
 			}
 		});
 		submenu.add(cautiousAiButton);

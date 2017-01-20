@@ -75,7 +75,7 @@ public class Board extends Observable {
 		return moves;
 	}
 
-	private List<Square> getFreeSquares() {
+	public List<Square> getFreeSquares() {
 		List<Square> squares = new ArrayList<>();
 		for (int r = 0; r < state.length; r++) {
 			for (int c = 0; c < state[0].length; c++) {
@@ -88,6 +88,10 @@ public class Board extends Observable {
 	}
 
 	public void move(Direction dir) {
+		move(dir, true);
+	}
+	
+	public void move(Direction dir, boolean placeTile) {
 		int[][] oldState = new int[4][4];
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
@@ -98,7 +102,9 @@ public class Board extends Observable {
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
 				if (state[r][c] != oldState[r][c]) {
-					placeTile();
+					if (placeTile) {
+						placeTile();
+					}
 					this.setChanged();
 					notifyObservers(state);
 					return;
@@ -253,7 +259,7 @@ public class Board extends Observable {
 		else
 			return (int) Math.round(70 + 30 * (score - 32000.0) / score);
 	}
-	
+
 	public void reset() {
 		for (int r = 0; r < state.length; r++) {
 			for (int c = 0; c < state[0].length; c++) {
