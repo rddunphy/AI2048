@@ -7,10 +7,10 @@ import java.util.Map;
 
 public class QuotaAI extends AI {
 
-	private static final int quota = 100000;
-	private static final double freeSquaresWeight = 0.2;
-	private static final double cornerTileWeight = 0;
-	private static final double edgeTilesWeight = 0.2;
+	private static final int quota = 1000000;
+	private static final double freeSquaresWeight = 0.3; // 0.2
+	private static final double cornerTileWeight = 0.2; // 0.1
+	private static final double edgeTilesWeight = 0.4; // 0.2
 	private static final double monotonicityWeight = 1;
 
 	private int totalPosCounter;
@@ -18,16 +18,21 @@ public class QuotaAI extends AI {
 	private int moveCounter;
 	private int maxPosCounterValue;
 	private int minPosCounterValue;
+	
+	private long startTime;
+	private long moveStartTime;
 
 	public QuotaAI() {
 		totalPosCounter = 0;
 		moveCounter = 0;
 		maxPosCounterValue = -1;
 		minPosCounterValue = -1;
+		startTime = System.currentTimeMillis();
 	}
 
 	@Override
 	protected void move() {
+		moveStartTime = System.currentTimeMillis();
 		movePosCounter = 0;
 		System.out.println("____________");
 		double score = -1;
@@ -53,11 +58,19 @@ public class QuotaAI extends AI {
 			minPosCounterValue = movePosCounter;
 		if (movePosCounter > maxPosCounterValue || maxPosCounterValue < 0)
 			maxPosCounterValue = movePosCounter;
-		System.out.println("Move " + moveCounter + " complete");
+		System.out.println("Move " + moveCounter + " complete (" + (System.currentTimeMillis() - moveStartTime) + "ms)");
 		System.out.println("Evaluated " + movePosCounter + " positions (total " + totalPosCounter + ")");
-		System.out.println("Positions evaluated: [" + minPosCounterValue + ", " + totalPosCounter / moveCounter + ", " + maxPosCounterValue + "]");
 	}
 
+	@Override
+	protected void endStats() {
+		long endTime = System.currentTimeMillis();
+		System.out.println("Game over in " + moveCounter + " moves.");
+		System.out.println("Final score: " + board.getScore() + " (" + board.getGrade() + "%)");
+		System.out.println("Total time: " + ((endTime - startTime) / 1000) + "s, average per move: " + ((endTime - startTime) / moveCounter) + "ms");
+		System.out.println("Positions evaluated: [" + minPosCounterValue + ", " + totalPosCounter / moveCounter + ", " + maxPosCounterValue + "]");
+	}
+	
 	private double evaluateMoveScore(Board b, int q) {
 		List<Square> free = b.getFreeSquares();
 		if (q < 2 * free.size()) {

@@ -17,8 +17,10 @@ public abstract class AI implements ActionListener {
 
 	public void actionPerformed(ActionEvent arg0) {
 		move();
-		if (board.checkGameOver())
+		if (board.checkGameOver()) {
 			timer.stop();
+			endStats();
+		}
 	}
 	
 	public void setBoard(Board board) {
@@ -26,4 +28,8 @@ public abstract class AI implements ActionListener {
 	}
 
 	protected abstract void move();
+	
+	protected void endStats() {
+		System.out.println(board.getScore());
+	}
 }
