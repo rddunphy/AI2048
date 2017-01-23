@@ -95,7 +95,7 @@ public class GUI implements Observer {
 	private void runAI() {
 		keyListener.setEnabled(false);
 		ai.setBoard(model);
-		ai.run(aiDelay);
+		ai.guiRun(aiDelay);
 	}
 
 	private void addMenuBar() {
@@ -169,12 +169,23 @@ public class GUI implements Observer {
 			}
 		});
 		submenu.add(probAiButton);
+		JRadioButtonMenuItem quotaAiButton = new JRadioButtonMenuItem("Quota AI");
+		quotaAiButton.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				AbstractButton button = (AbstractButton) e.getItem();
+				if (button.isSelected())
+					ai = new QuotaAI();
+			}
+		});
+		submenu.add(quotaAiButton);
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rubbishAiButton);
 		bg.add(greedyAiButton);
 		bg.add(cautiousAiButton);
 		bg.add(probAiButton);
-		probAiButton.setSelected(true);
+		bg.add(quotaAiButton);
+		quotaAiButton.setSelected(true);
 		menu.add(submenu);
 		menubar.add(menu);
 		frame.setJMenuBar(menubar);

@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ProbabalisticAI extends AI {
+public class QuotaAI extends AI {
 
-	private static final int maxdepth = 5;
+	private static final int quota = 100000;
 	private static final double freeSquaresWeight = 0.2;
 	private static final double cornerTileWeight = 0;
 	private static final double edgeTilesWeight = 0.2;
@@ -15,9 +15,15 @@ public class ProbabalisticAI extends AI {
 
 	private int totalPosCounter;
 	private int movePosCounter;
+	private int moveCounter;
+	private int maxPosCounterValue;
+	private int minPosCounterValue;
 
-	public ProbabalisticAI() {
+	public QuotaAI() {
 		totalPosCounter = 0;
+		moveCounter = 0;
+		maxPosCounterValue = -1;
+		minPosCounterValue = -1;
 	}
 
 	@Override
@@ -30,53 +36,68 @@ public class ProbabalisticAI extends AI {
 		for (Direction m : available) {
 			Board nb = new Board(board);
 			nb.move(m, false);
-			double s = evaluateMoveScore(nb, maxdepth);
+			double s = evaluateMoveScore(nb, quota / available.size());
 			if (s > score) {
 				score = s;
 				move = m;
 			}
 		}
 		board.move(move);
+		doStats();
+	}
+	
+	private void doStats() {
 		totalPosCounter += movePosCounter;
+		moveCounter++;
+		if (movePosCounter < minPosCounterValue || minPosCounterValue < 0)
+			minPosCounterValue = movePosCounter;
+		if (movePosCounter > maxPosCounterValue || maxPosCounterValue < 0)
+			maxPosCounterValue = movePosCounter;
+		System.out.println("Move " + moveCounter + " complete");
 		System.out.println("Evaluated " + movePosCounter + " positions (total " + totalPosCounter + ")");
+		System.out.println("Positions evaluated: [" + minPosCounterValue + ", " + totalPosCounter / moveCounter + ", " + maxPosCounterValue + "]");
 	}
 
-	private double evaluateMoveScore(Board b, int d) {
+	private double evaluateMoveScore(Board b, int q) {
 		List<Square> free = b.getFreeSquares();
-		d = limitDepth(d, free.size());
+		if (q < 2 * free.size()) {
+			return -1;
+		}
+		q /= 2 * free.size();
 		double score = 0;
 		for (Square s : free) {
 			// place 2 in s
 			b.put(s.row, s.col, 2);
-			score += 0.9 * evaluatePositionScore(b, d);
+			score += 0.9 * evaluatePositionScore(b, q);
 			// place 4 in s
 			b.put(s.row, s.col, 4);
-			score += 0.1 * evaluatePositionScore(b, d);
+			score += 0.1 * evaluatePositionScore(b, q);
 			// place 0 in s
 			b.put(s.row, s.col, 0);
 		}
 		return score / free.size();
 	}
 
-	private double evaluatePositionScore(Board b, int d) {
+	private double evaluatePositionScore(Board b, int q) {
 		if (b.checkGameOver()) {
 			movePosCounter++;
 			return 0;
 		}
-		if (d == 0) {
-			return evaluateHeuristics(b);
-		} else {
-			double score = -1;
-			List<Direction> available = b.availableMoves();
-			for (Direction m : available) {
-				Board nb = new Board(b);
-				nb.move(m, false);
-				double s = evaluateMoveScore(nb, d - 1);
-				if (s > score)
-					score = s;
-			}
-			return score;
+		double score = -1;
+		List<Direction> available = b.availableMoves();
+		//if (q < available.size())
+			//return evaluateHeuristics(b);
+		q /= available.size();
+		for (Direction m : available) {
+			Board nb = new Board(b);
+			nb.move(m, false);
+			double s = evaluateMoveScore(nb, q);
+			if (s < 0)
+				return evaluateHeuristics(b); // quota exceeded
+			if (s > score)
+				score = s; // maximise over all possible move scores
 		}
+		return score;
 	}
 
 	private double evaluateHeuristics(Board b) {
@@ -188,24 +209,11 @@ public class ProbabalisticAI extends AI {
 		}
 		return (increasing && decreasing) ? 0 : 1;
 	}
-	
+
 	private boolean isEdgeTile(Square s) {
 		if (s.col == 0 || s.col == 3 || s.row == 0 || s.row == 3)
 			return true;
 		return false;
-	}
-
-	private int limitDepth(int d, int free) {
-		int limit = 5;
-		if (free > 0)
-			limit = 4;
-		if (free > 1)
-			limit = 3;
-		if (free > 3)
-			limit = 2;
-		if (free > 8)
-			limit = 1;
-		return d < limit ? d : limit;
 	}
 
 }

@@ -8,7 +8,7 @@ public abstract class AI implements ActionListener {
 	protected Board board;
 	private Timer timer;
 	
-	public void run(int delay) {
+	public void guiRun(int delay) {
 		if (!board.checkGameOver()) {
 			timer = new Timer(delay, this);
 			timer.start();
