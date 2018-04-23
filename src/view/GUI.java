@@ -1,3 +1,8 @@
+package view;
+
+import ai.*;
+import model.Board;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -40,8 +45,8 @@ public class GUI implements Observer {
 	private AI ai;
 	private static final int aiDelay = 20;
 
-	public GUI() {
-		model = new Board();
+	public GUI(Board b) {
+		model = b;
 		model.addObserver(this);
 		ai = new RubbishAI();
 		this.colours = new Colours();
@@ -110,8 +115,8 @@ public class GUI implements Observer {
 		});
 		menu.add(item);
 		menubar.add(menu);
-		menu = new JMenu("AI");
-		item = new JMenuItem("Move");
+		menu = new JMenu("ai.AI");
+		item = new JMenuItem("model.Move");
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -127,8 +132,8 @@ public class GUI implements Observer {
 			}
 		});
 		menu.add(item);
-		JMenu submenu = new JMenu("Change AI");
-		JRadioButtonMenuItem rubbishAiButton = new JRadioButtonMenuItem("Rubbish AI");
+		JMenu submenu = new JMenu("Change ai.AI");
+		JRadioButtonMenuItem rubbishAiButton = new JRadioButtonMenuItem("Rubbish ai.AI");
 		rubbishAiButton.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -138,7 +143,7 @@ public class GUI implements Observer {
 			}
 		});
 		submenu.add(rubbishAiButton);
-		JRadioButtonMenuItem greedyAiButton = new JRadioButtonMenuItem("Greedy AI");
+		JRadioButtonMenuItem greedyAiButton = new JRadioButtonMenuItem("Greedy ai.AI");
 		greedyAiButton.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -149,7 +154,7 @@ public class GUI implements Observer {
 			}
 		});
 		submenu.add(greedyAiButton);
-		JRadioButtonMenuItem cautiousAiButton = new JRadioButtonMenuItem("Cautious AI");
+		JRadioButtonMenuItem cautiousAiButton = new JRadioButtonMenuItem("Cautious ai.AI");
 		cautiousAiButton.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -159,7 +164,7 @@ public class GUI implements Observer {
 			}
 		});
 		submenu.add(cautiousAiButton);
-		JRadioButtonMenuItem probAiButton = new JRadioButtonMenuItem("Probabalistic AI");
+		JRadioButtonMenuItem probAiButton = new JRadioButtonMenuItem("Probabalistic ai.AI");
 		probAiButton.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -169,7 +174,7 @@ public class GUI implements Observer {
 			}
 		});
 		submenu.add(probAiButton);
-		JRadioButtonMenuItem quotaAiButton = new JRadioButtonMenuItem("Quota AI");
+		JRadioButtonMenuItem quotaAiButton = new JRadioButtonMenuItem("Quota ai.AI");
 		quotaAiButton.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -250,7 +255,8 @@ public class GUI implements Observer {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new GUI();
+				Board b = new Board();
+				new GUI(b);
 			}
 		});
 	}

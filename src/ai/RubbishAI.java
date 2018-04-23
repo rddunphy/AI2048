@@ -1,8 +1,12 @@
+package ai;
+
+import model.Direction;
+
 import java.util.List;
 
 public class RubbishAI extends AI {
 
-	protected void move() {
+	public void move() {
 		if (!board.checkGameOver()) {
 			List<Direction> moves = board.availableMoves();
 			if (moves.contains(Direction.LEFT))

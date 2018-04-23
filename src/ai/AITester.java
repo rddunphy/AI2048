@@ -1,3 +1,6 @@
+package ai;
+
+import model.Board;
 
 public class AITester {
 

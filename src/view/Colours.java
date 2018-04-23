@@ -1,3 +1,5 @@
+package view;
+
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;

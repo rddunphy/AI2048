@@ -1,17 +1,23 @@
+package ai;
+
+import model.Board;
+import model.Direction;
+import model.Move;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CautiousAI extends AI {
-	
+public class GreedyAI extends AI {
+
 	private int depth;
 	
-	public CautiousAI(int depth) {
+	public GreedyAI(int depth) {
 		this.depth = depth;
 	}
-
+	
 	@Override
-	protected void move() {
+	public void move() {
 		if (!board.checkGameOver()) {
 			board.move(findBestMove(board, depth).getDir());
 		}
@@ -24,7 +30,7 @@ public class CautiousAI extends AI {
 			Board nb = new Board(b);
 			nb.move(dir, false);
 			if (d == 0) {
-				moves.add(new Move(dir, nb.getFreeSquares().size()));
+				moves.add(new Move(dir, nb.getScore()));
 			} else {
 				moves.add(new Move(dir, findBestMove(nb, d - 1).getScore()));
 			}
@@ -43,5 +49,5 @@ public class CautiousAI extends AI {
 		}
 		return move;
 	}
-	
+
 }

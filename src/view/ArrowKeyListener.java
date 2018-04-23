@@ -1,3 +1,8 @@
+package view;
+
+import model.Board;
+import model.Direction;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 

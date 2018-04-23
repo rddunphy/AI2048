@@ -1,3 +1,7 @@
+package ai;
+
+import model.Board;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -27,9 +31,9 @@ public abstract class AI implements ActionListener {
 		this.board = board;
 	}
 
-	protected abstract void move();
+	public abstract void move();
 	
-	protected void endStats() {
+	public void endStats() {
 		System.out.println(board.getScore());
 	}
 }
